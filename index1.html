@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ôn Tập Bài 16 — 3 Phần Tương Tác</title>
+  <title>Cùng robot Py luyện tập - Bài 16</title>
   <style>
     :root {
       --bg: #0f172a;
@@ -801,6 +801,57 @@
       .stats-table { font-size: 0.82rem; }
       .stats-table th, .stats-table td { padding: 8px 7px; white-space: nowrap; }
     }
+
+    .analysis-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 14px;
+      margin: 0 0 18px;
+    }
+    .analysis-card {
+      background: var(--card-light);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+    }
+    .analysis-title {
+      font-size: 0.98rem;
+      font-weight: 700;
+      color: var(--text);
+      margin: 0 0 12px;
+    }
+    .bar-row {
+      margin-bottom: 10px;
+    }
+    .bar-row:last-child { margin-bottom: 0; }
+    .bar-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.84rem;
+      color: #cbd5e1;
+      margin-bottom: 4px;
+    }
+    .bar-track {
+      height: 9px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.55);
+      overflow: hidden;
+    }
+    .bar-fill {
+      height: 100%;
+      border-radius: 999px;
+      transition: width 0.3s ease;
+    }
+    .analysis-insight {
+      margin-top: 12px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: rgba(6, 182, 212, 0.12);
+      border: 1px solid rgba(6, 182, 212, 0.28);
+      color: #cffafe;
+      font-size: 0.86rem;
+      line-height: 1.45;
+    }
   </style>
 </head>
 <body>
@@ -817,7 +868,7 @@
           <circle cx="32" cy="7" r="4" fill="#F59E0B"/>
         </svg>
         <div>
-          <h1 class="brand-title">Cùng Py Luyện Tập - Bài 16</h1>
+          <h1 class="brand-title">Cùng robot Py luyện tập - Bài 16</h1>
           <p class="brand-sub">Ngôn ngữ lập trình bậc cao và Python</p>
         </div>
       </div>
@@ -836,10 +887,7 @@
       <div class="welcome-scrim"></div>
       <div class="welcome-inner">
         <div>
-           
-          <!-- <h2 class="welcome-title">BÀI 16</h2> 
-          <p class="welcome-sub">Hãy cùng Robot Py ôn tập lại kiến thức của bài 16!</p>
-          -->
+          
         </div>
         <button id="welcomeStartBtn" type="button" class="primary-btn" style="padding: 14px 42px; font-size: 1.08rem;">Bắt đầu</button>
       </div>
@@ -858,7 +906,7 @@
           <circle cx="32" cy="6" r="4.5" fill="#F59E0B"/>
         </svg>
         <h2 class="hero-title">Đăng Nhập Học Sinh</h2>
-        <p class="hero-desc">Nhập đầy đủ thông tin bên dưới để bắt đầu ôn tập Bài 16 cùng Py.</p>
+        <p class="hero-desc">Nhập đầy đủ thông tin bên dưới để bắt đầu làm bài luyện tập Bài 16 cùng Py.</p>
 
         <form id="loginForm" class="login-form">
           <div class="field-group">
@@ -911,7 +959,7 @@
           </button>
           <button type="button" class="mode-card" data-part="part3">
             <div class="mode-name">Phần III: Điền khuyết dữ liệu</div>
-            <div class="mode-info">10 câu viết lệnh &amp; kết quả.</div>
+            <div class="mode-info">10 câu dự đoán Giá trị &amp; Kiểu.</div>
             <span id="donePart3" class="mode-done hidden"></span>
           </button>
         </div>
@@ -1004,17 +1052,20 @@
             <div id="sumP2" class="sum-val">0 / 10</div>
           </div>
           <div class="sum-card">
-            <div class="sum-label">Phần III (Điền khuyết)</div>
+            <div class="sum-label">Phần III (Viết lệnh)</div>
             <div id="sumP3" class="sum-val">0 / 10</div>
           </div>
         </div>
 
-        <div id="summaryReviewTabs" class="controls-right" style="justify-content:center; margin-bottom:6px;"></div>
-        <div id="summaryReviewList" class="review-list" style="width:100%; text-align:left;"></div>
+        <div id="summaryReviewWrap" class="hidden" style="width:100%;">
+          <div id="summaryReviewTabs" class="controls-right" style="justify-content:center; margin-bottom:6px;"></div>
+          <div id="summaryReviewList" class="review-list" style="width:100%; text-align:left;"></div>
+        </div>
 
         <div id="sheetSyncStatus" class="sheet-status hidden"></div>
         <div class="result-actions">
-          <button id="redoAllBtn" class="primary-btn" type="button">Làm lại toàn bộ 3 phần</button>
+          <button id="toggleSummaryReviewBtn" class="pill-btn" type="button" style="padding: 12px 20px; font-size: 0.95rem;">Xem lại bài làm</button>
+          <button id="redoAllBtn" class="primary-btn" type="button">Làm lại</button>
           <button id="summaryHomeBtn" class="pill-btn" type="button" style="padding: 12px 20px; font-size: 0.95rem;">Chọn phần để làm lại</button>
         </div>
       </div>
@@ -1035,6 +1086,7 @@
 
       <div id="teacherKpiGrid" class="teacher-kpi-grid"></div>
       <div id="classFilterBar" class="class-filter-bar"></div>
+      <div id="teacherAnalysisPanel" class="analysis-grid"></div>
       <div id="teacherClassList"></div>
     </div>
   </section>
@@ -1174,7 +1226,7 @@
     };
 
     // Dán link Web App từ Google Apps Script vào giữa dấu ngoặc kép bên dưới để tự động lưu điểm cho mọi học sinh:
-    const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbzBbKuvis-ZFDVW7KSoJBEco87-EIgIAh7l0iEimZ5tn4-RFk735Y-Lww0NvLZGbFv00w/exec";
+    const GOOGLE_SHEET_URL = "https://script.google.com/macros/s/AKfycbzqmFmykb9Qv72AieCNBqwwsLY0-fOSKDdFDPuLGV4u3MrN_3gOwmCez4G0DY57-79IJQ/exec";
 
     const state = {
       student: { name: "", cls: "", stt: "" },
@@ -1211,7 +1263,8 @@
           completed: state.completed,
           partHistories: state.partHistories,
           inProgress: state.inProgress,
-          lastCompletedPart: state.lastCompletedPart
+          lastCompletedPart: state.lastCompletedPart,
+          submittedToSheet: state.submittedToSheet
         };
         localStorage.setItem(getStudentSessionKey(state.student), JSON.stringify(snapshot));
       } catch (e) {}
@@ -1228,6 +1281,7 @@
         state.partHistories = snap.partHistories || {};
         state.inProgress = snap.inProgress || {};
         state.lastCompletedPart = snap.lastCompletedPart || null;
+        state.submittedToSheet = Boolean(snap.submittedToSheet);
         return true;
       } catch (e) {
         return false;
@@ -1315,6 +1369,7 @@
         state.partHistories = {};
         state.inProgress = {};
         state.lastCompletedPart = null;
+        state.submittedToSheet = false;
       }
       if (state.lastCompletedPart) {
         viewResultsBtn.classList.remove("hidden");
@@ -1325,6 +1380,15 @@
       studentInfoBadge.classList.remove("hidden");
       switchUserBtn.classList.remove("hidden");
       loginScreen.classList.add("hidden");
+      const allThreeDoneLogin =
+        state.completed.part1 !== undefined &&
+        state.completed.part2 !== undefined &&
+        state.completed.part3 !== undefined;
+      if (allThreeDoneLogin) {
+        showFinalSummary();
+        playTone("ok");
+        return;
+      }
       goHome();
       playTone("ok");
     });
@@ -1419,6 +1483,7 @@
       state.partHistories = {};
       state.inProgress = {};
       state.attemptId = "L" + Date.now() + "_" + Math.random().toString(36).slice(2, 6);
+      state.submittedToSheet = false;
       state.lastCompletedPart = null;
       viewResultsBtn.classList.add("hidden");
       state.part = "part1";
@@ -1431,6 +1496,15 @@
     });
 
     function startPart(forceReset = false) {
+      const allThreeWereDone =
+        state.completed.part1 !== undefined &&
+        state.completed.part2 !== undefined &&
+        state.completed.part3 !== undefined;
+      if (allThreeWereDone && state.submittedToSheet) {
+        state.attemptId = "L" + Date.now() + "_" + Math.random().toString(36).slice(2, 6);
+        state.submittedToSheet = false;
+        forceReset = true;
+      }
       const saved = !forceReset ? state.inProgress[state.part] : null;
       if (saved) {
         state.index = saved.index;
@@ -1441,7 +1515,7 @@
         delete state.inProgress[state.part];
         state.index = 0;
         state.score = 0;
-        state.streak = 0;
+        // giữ nguyên tổng số câu đúng
         state.history = [];
       }
       startScreen.classList.add("hidden");
@@ -1456,6 +1530,7 @@
     document.getElementById("retryBtn").addEventListener("click", () => {
       if (state.completed.part1 !== undefined && state.completed.part2 !== undefined && state.completed.part3 !== undefined) {
         state.attemptId = "L" + Date.now() + "_" + Math.random().toString(36).slice(2, 6);
+        state.submittedToSheet = false;
       }
       startPart(true);
     });
@@ -1470,7 +1545,7 @@
       document.getElementById("qCounter").textContent =
         (state.part === "part2" ? "Tình huống " : "Câu ") + `${state.index + 1} / ${total}`;
       document.getElementById("scoreBadge").textContent = `Điểm: ${state.score}`;
-      document.getElementById("streakBadge").textContent = `Chuỗi đúng: ${state.streak}`;
+      document.getElementById("streakBadge").textContent = `Câu đúng: ${state.streak}`;
       document.getElementById("progressFill").style.width = `${(state.index / total) * 100}%`;
 
       const feedbackBox = document.getElementById("feedbackBox");
@@ -1596,6 +1671,8 @@
     }
 
     function showFeedback(isOk, title, body) {
+      document.getElementById("scoreBadge").textContent = `Điểm: ${state.score}`;
+      document.getElementById("streakBadge").textContent = `Câu đúng: ${state.streak}`;
       saveStudentSession();
       const box = document.getElementById("feedbackBox");
       box.classList.remove("hidden", "ok", "bad");
@@ -1603,7 +1680,7 @@
       document.getElementById("feedbackTitle").textContent = title;
       document.getElementById("feedbackBody").textContent = body;
       document.getElementById("scoreBadge").textContent = `Điểm: ${state.score}`;
-      document.getElementById("streakBadge").textContent = `Chuỗi đúng: ${state.streak}`;
+      document.getElementById("streakBadge").textContent = `Câu đúng: ${state.streak}`;
       document.getElementById("nextBtn").classList.remove("hidden");
     }
 
@@ -1627,7 +1704,7 @@
       }
       const p1Pick = String.fromCharCode(65 + oi);
       const p1Ans = String.fromCharCode(65 + item.ans);
-      state.history.push({ title: item.q, ok: isOk, exp: item.exp, summaryLine: `C${state.index + 1}: ${p1Pick} (${isOk ? "Đ" : "S, ĐA: " + p1Ans})` });
+      state.history.push({ title: item.q, ok: isOk, exp: item.exp, picked: oi, summaryLine: `C${state.index + 1}: ${p1Pick} (${isOk ? "Đ" : "S, ĐA: " + p1Ans})` });
       showFeedback(isOk, isOk ? "Chính xác!" : "Chưa chính xác!", item.exp);
     }
 
@@ -1650,12 +1727,12 @@
         });
         state.score += rightCount * 0.5;
         const allOk = rightCount === 4;
-        state.streak = allOk ? state.streak + 1 : 0;
+        if (allOk) state.streak += 1;
         playTone(rightCount >= 3 ? "ok" : "bad");
         renderP2Rows(item);
         const summaryExp = allOk ? "Bạn đã trả lời đúng cả 4 ý!" : wrongExps.join(" ");
         const p2Detail = state.tfPicks.map((v, si) => (v ? "Đ" : "S") + (v === item.items[si].ans ? "✓" : "✗")).join(", ");
-        state.history.push({ title: `${item.title} (Đúng ${rightCount}/4 ý)`, ok: allOk, exp: summaryExp, summaryLine: `C${state.index + 1}: [${p2Detail}] (${rightCount}/4)` });
+        state.history.push({ title: `${item.title} (Đúng ${rightCount}/4 ý)`, ok: allOk, exp: summaryExp, picks: [...state.tfPicks], rightCount, summaryLine: `C${state.index + 1}: [${p2Detail}] (${rightCount}/4)` });
         showFeedback(
           allOk,
           allOk ? "Chính xác cả 4/4 ý!" : `Bạn đúng ${rightCount}/4 ý (xem giải thích ngay dưới các ý sai)`,
@@ -1681,13 +1758,17 @@
         const gained = (isCmdOk ? 1 : 0) + (isOutOk ? 1 : 0);
         const isOk = isCmdOk && isOutOk;
         state.score = Math.round((state.score + gained) * 100) / 100;
-        state.streak = isOk ? state.streak + 1 : 0;
+        if (isOk) state.streak += 1;
         playTone(gained >= 2 ? "ok" : "bad");
         const ansNote = item.exp;
         state.history.push({
           title: item.expr,
           ok: isOk,
           exp: ansNote,
+          cmdVal: cmdIn.value,
+          outVal: outIn.value,
+          isCmdOk,
+          isOutOk,
           summaryLine: `C${state.index + 1}: Lệnh="${rawCmd || "(trống)"}" (${isCmdOk ? "Đ" : "S: " + item.cmdDisplay}), KQ="${outIn.value.trim() || "(trống)"}" (${isOutOk ? "Đ" : "S: " + item.outDisplay})`
         });
         showFeedback(isOk, isOk ? "Chính xác hoàn toàn!" : "Chưa chính xác hoàn toàn!", ansNote);
@@ -1723,7 +1804,6 @@
         showFinalSummary();
         return;
       }
-      submitResultToGoogleSheet(true);
 
       resultScreen.classList.remove("hidden");
       const maxS = PART_META[state.part].maxScore;
@@ -1779,19 +1859,148 @@
         b.addEventListener("click", () => renderSummaryReview(pk));
         tabs.appendChild(b);
       });
+
       list.innerHTML = "";
-      (state.partHistories[partKey] || []).forEach((h) => {
-        const div = document.createElement("div");
-        div.className = `review-item ${h.ok ? "" : "bad"}`;
-        const qDiv = document.createElement("div");
-        qDiv.className = "review-q";
-        qDiv.textContent = h.title;
-        const eDiv = document.createElement("div");
-        eDiv.className = "review-exp";
-        eDiv.textContent = h.exp;
-        div.appendChild(qDiv);
-        div.appendChild(eDiv);
-        list.appendChild(div);
+      const items = DATA[partKey] || [];
+      const histories = state.partHistories[partKey] || [];
+      const keys = ["A", "B", "C", "D"];
+
+      items.forEach((item, idx) => {
+        const h = histories[idx] || {};
+        const card = document.createElement("div");
+        card.className = "q-box";
+        card.style.marginBottom = "14px";
+
+        const tag = document.createElement("div");
+        tag.className = "q-tag";
+        tag.textContent = (partKey === "part2" ? `Tình huống ${idx + 1}` : `Câu ${idx + 1}`) + ` / ${items.length}`;
+        card.appendChild(tag);
+
+        if (partKey === "part1") {
+          const qt = document.createElement("div");
+          qt.className = "q-text";
+          qt.textContent = item.q;
+          card.appendChild(qt);
+
+          const grid = document.createElement("div");
+          grid.className = "options-grid";
+          item.opts.forEach((opt, oi) => {
+            const btn = document.createElement("button");
+            btn.type = "button";
+            btn.disabled = true;
+            btn.className = "option-btn";
+            if (oi === item.ans) btn.classList.add("correct");
+            if (h.picked === oi && oi !== item.ans) btn.classList.add("wrong");
+            btn.innerHTML = `<span class="option-key">${keys[oi]}</span><span></span>`;
+            btn.querySelector("span:last-child").textContent = opt;
+            grid.appendChild(btn);
+          });
+          card.appendChild(grid);
+
+          const fb = document.createElement("div");
+          fb.className = `feedback-box ${h.ok ? "ok" : "bad"}`;
+          fb.innerHTML = `<div class="feedback-title">${h.ok ? "Chính xác!" : "Chưa chính xác!"}</div><div class="feedback-body"></div>`;
+          fb.querySelector(".feedback-body").textContent = item.exp;
+          card.appendChild(fb);
+        } else if (partKey === "part2") {
+          const qt = document.createElement("div");
+          qt.className = "q-text";
+          qt.textContent = item.title;
+          card.appendChild(qt);
+
+          const qc = document.createElement("div");
+          qc.className = "code-block";
+          qc.style.fontFamily = "inherit";
+          qc.style.whiteSpace = "pre-wrap";
+          qc.style.lineHeight = "1.6";
+          qc.textContent = item.stem || item.code || "";
+          card.appendChild(qc);
+
+          const tfList = document.createElement("div");
+          tfList.className = "tf-list";
+          const picks = Array.isArray(h.picks) ? h.picks : [null, null, null, null];
+          item.items.forEach((sub, si) => {
+            const wrap = document.createElement("div");
+            wrap.className = "tf-item-wrap";
+            const row = document.createElement("div");
+            row.className = "tf-row";
+            const isSubOk = picks[si] === sub.ans;
+            if (picks[si] !== null) row.classList.add(isSubOk ? "ok" : "bad");
+
+            const txt = document.createElement("div");
+            txt.className = "tf-text";
+            txt.textContent = sub.text;
+
+            const btns = document.createElement("div");
+            btns.className = "tf-btns";
+            [true, false].forEach((val) => {
+              const b = document.createElement("button");
+              b.type = "button";
+              b.disabled = true;
+              b.className = "tf-btn";
+              b.textContent = val ? "Đúng" : "Sai";
+              if (picks[si] === val) b.classList.add(val ? "sel-true" : "sel-false");
+              btns.appendChild(b);
+            });
+            row.appendChild(txt);
+            row.appendChild(btns);
+            wrap.appendChild(row);
+
+            if (!isSubOk) {
+              const expDiv = document.createElement("div");
+              expDiv.className = "tf-inline-exp";
+              expDiv.textContent = sub.exp;
+              wrap.appendChild(expDiv);
+            }
+            tfList.appendChild(wrap);
+          });
+          card.appendChild(tfList);
+
+          const rc = h.rightCount !== undefined ? h.rightCount : item.items.filter((sub, si) => picks[si] === sub.ans).length;
+          const fb = document.createElement("div");
+          fb.className = `feedback-box ${rc === 4 ? "ok" : "bad"}`;
+          fb.innerHTML = `<div class="feedback-title">${rc === 4 ? "Chính xác cả 4/4 ý!" : `Đúng ${rc}/4 ý`}</div>`;
+          card.appendChild(fb);
+        } else {
+          const qt = document.createElement("div");
+          qt.className = "q-text";
+          qt.textContent = "Viết câu lệnh Python trực tiếp sau dấu nhắc >>> và kết quả hiển thị:";
+          card.appendChild(qt);
+
+          const qc = document.createElement("div");
+          qc.className = "code-block";
+          qc.style.fontFamily = "inherit";
+          qc.style.whiteSpace = "pre-wrap";
+          qc.style.lineHeight = "1.6";
+          if (item.exprHtml) qc.innerHTML = item.exprHtml;
+          else qc.textContent = item.expr;
+          card.appendChild(qc);
+
+          const grid = document.createElement("div");
+          grid.className = "fill-grid";
+          grid.innerHTML = `
+            <div class="fill-row">
+              <label>Câu lệnh</label>
+              <input type="text" class="fill-input ${h.isCmdOk ? "ok" : "bad"}" disabled />
+            </div>
+            <div class="fill-row">
+              <label>Kết quả</label>
+              <input type="text" class="fill-input ${h.isOutOk ? "ok" : "bad"}" disabled />
+            </div>
+          `;
+          const inputs = grid.querySelectorAll("input");
+          inputs[0].value = h.cmdVal !== undefined ? h.cmdVal : "";
+          inputs[1].value = h.outVal !== undefined ? h.outVal : "";
+          card.appendChild(grid);
+
+          const fb = document.createElement("div");
+          fb.className = `feedback-box ${h.ok ? "ok" : "bad"}`;
+          fb.innerHTML = `<div class="feedback-title">${h.ok ? "Chính xác hoàn toàn!" : "Chưa chính xác hoàn toàn!"}</div><div class="feedback-body"></div>`;
+          fb.querySelector(".feedback-body").textContent = item.exp;
+          card.appendChild(fb);
+        }
+
+        list.appendChild(card);
       });
     }
 
@@ -1874,8 +2083,12 @@
         title.textContent = "Cố lên nhé! Hãy thử lại để đạt điểm cao hơn!";
         msg.textContent = `Py ghi nhận nỗ lực của ${stu} (${total}/${maxTotal} điểm - ${pct}%). Bạn hãy xem lại các câu hỏi về chế độ làm việc và lệnh print() trong Python và bấm nút làm lại bên dưới để chinh phục điểm tuyệt đối nhé!`;
       }
+      const revWrap = document.getElementById("summaryReviewWrap");
+      const revBtn = document.getElementById("toggleSummaryReviewBtn");
+      if (revWrap) revWrap.classList.add("hidden");
+      if (revBtn) revBtn.textContent = "Xem lại bài làm";
       renderSummaryReview("part1");
-      submitResultToGoogleSheet(true);
+      submitResultToGoogleSheet(false);
     }
 
     function getSheetWebAppUrl() {
@@ -1969,6 +2182,14 @@
         if (retryBtn) retryBtn.classList.remove("hidden");
       }
       if (!sheetUrl) return;
+      if (state.submittedToSheet && !force) {
+        if (statusEl) {
+          statusEl.classList.remove("hidden", "wait", "warn");
+          statusEl.classList.add("ok");
+          statusEl.textContent = `Đã lưu kết quả của ${state.student.name} (Lớp ${state.student.cls} - STT ${state.student.stt})!`;
+        }
+        return;
+      }
 
       try {
         await fetch(sheetUrl, {
@@ -1978,6 +2199,7 @@
           body: JSON.stringify(payload)
         });
         state.submittedToSheet = true;
+        saveStudentSession();
         if (statusEl) {
           statusEl.classList.remove("wait", "warn");
           statusEl.classList.add("ok");
@@ -2019,6 +2241,7 @@
 
     async function loadTeacherStats() {
       const noteEl = document.getElementById("teacherSourceNote");
+      const analysisEl = document.getElementById("teacherAnalysisPanel");
       const listEl = document.getElementById("teacherClassList");
       const sheetUrl = getSheetWebAppUrl();
       noteEl.textContent = sheetUrl ? "Đang tải dữ liệu từ Google Sheet..." : "Đang đọc dữ liệu lưu tạm trên trình duyệt (chưa gắn GOOGLE_SHEET_URL)...";
@@ -2121,9 +2344,21 @@
       renderTeacherDashboard();
     }
 
+    function getStudentRemark(st) {
+      const weak = [];
+      if (st.part1 < 5) weak.push("Phần I (lý thuyết)");
+      if (st.part2 < 5) weak.push("Phần II (đúng/sai)");
+      if (st.part3 < 5) weak.push("Phần III (viết lệnh)");
+      if (st.percent >= 80 && weak.length === 0) return "Hoàn thành tốt, nắm vững bài";
+      if (weak.length > 0) return `Cần ôn lại: ${weak.join(", ")}`;
+      if (st.percent >= 65) return "Khá, hiểu bài";
+      return "Đạt yêu cầu, cần luyện thêm";
+    }
+
     function renderTeacherDashboard() {
       const kpiEl = document.getElementById("teacherKpiGrid");
       const filterEl = document.getElementById("classFilterBar");
+      const analysisEl = document.getElementById("teacherAnalysisPanel");
       const listEl = document.getElementById("teacherClassList");
 
       const byClass = {};
@@ -2161,6 +2396,7 @@
         filterEl.appendChild(btn);
       });
 
+      analysisEl.innerHTML = "";
       listEl.innerHTML = "";
       if (!classNames.length) {
         listEl.innerHTML = `<div class="class-group-card"><p style="margin:0; color:var(--muted); line-height:1.5;">Chưa có dữ liệu học sinh làm bài. Lưu ý: học sinh cần hoàn thành đủ <strong>cả 3 phần</strong> thì kết quả mới được lưu lên Google Sheet, và bạn nên <strong>tải tệp HTML về mở bằng Chrome/Edge</strong> (khung xem trước có thể chặn kết nối mạng ra ngoài).</p></div>`;
@@ -2168,15 +2404,74 @@
       }
 
       const visibleClasses = selectedTeacherClass === "ALL" ? classNames : classNames.filter((c) => c === selectedTeacherClass);
+      const scopedRecords = selectedTeacherClass === "ALL" ? teacherRecords : (byClass[selectedTeacherClass] || []);
+      const scopeCount = scopedRecords.length;
+
+      if (scopeCount > 0) {
+        const tiers = [
+          { label: "Tốt (≥ 80%)", count: scopedRecords.filter((r) => r.percent >= 80).length, color: "#10b981" },
+          { label: "Khá (65% – 79%)", count: scopedRecords.filter((r) => r.percent >= 65 && r.percent < 80).length, color: "#06b6d4" },
+          { label: "Đạt (50% – 64%)", count: scopedRecords.filter((r) => r.percent >= 50 && r.percent < 65).length, color: "#f59e0b" },
+          { label: "Cần hỗ trợ (< 50%)", count: scopedRecords.filter((r) => r.percent < 50).length, color: "#ef4444" }
+        ];
+
+        const avgP1 = (scopedRecords.reduce((s, r) => s + r.part1, 0) / scopeCount).toFixed(1);
+        const avgP2 = (scopedRecords.reduce((s, r) => s + r.part2, 0) / scopeCount).toFixed(1);
+        const avgP3 = (scopedRecords.reduce((s, r) => s + r.part3, 0) / scopeCount).toFixed(1);
+        const partAvgs = [
+          { name: "Phần I (Trắc nghiệm lý thuyết)", avg: Number(avgP1), color: "#06b6d4" },
+          { name: "Phần II (Tình huống Đúng / Sai)", avg: Number(avgP2), color: "#8b5cf6" },
+          { name: "Phần III (Viết lệnh Python)", avg: Number(avgP3), color: "#10b981" }
+        ];
+        const sortedParts = [...partAvgs].sort((a, b) => a.avg - b.avg);
+        const weakest = sortedParts[0];
+        const strongest = sortedParts[sortedParts.length - 1];
+        const scopeTitle = selectedTeacherClass === "ALL" ? "Toàn bộ các lớp" : `Lớp ${selectedTeacherClass}`;
+
+        analysisEl.innerHTML = `
+          <div class="analysis-card">
+            <h3 class="analysis-title">Phân bố mức độ đạt (${scopeTitle})</h3>
+            ${tiers.map((t) => {
+              const p = Math.round((t.count / scopeCount) * 100);
+              return `
+                <div class="bar-row">
+                  <div class="bar-meta"><span>${t.label}</span><span><strong>${t.count} HS</strong> (${p}%)</span></div>
+                  <div class="bar-track"><div class="bar-fill" style="width:${p}%; background:${t.color};"></div></div>
+                </div>
+              `;
+            }).join("")}
+          </div>
+          <div class="analysis-card">
+            <h3 class="analysis-title">Phân tích năng lực theo từng phần (${scopeTitle})</h3>
+            ${partAvgs.map((pa) => `
+              <div class="bar-row">
+                <div class="bar-meta"><span>${pa.name}</span><span><strong>${pa.avg.toFixed(1)} / 10</strong></span></div>
+                <div class="bar-track"><div class="bar-fill" style="width:${Math.min(100, pa.avg * 10)}%; background:${pa.color};"></div></div>
+              </div>
+            `).join("")}
+            <div class="analysis-insight">
+              <strong>Nhận xét nhanh:</strong> Điểm mạnh nhất là <strong>${strongest.name}</strong> (TB ${strongest.avg.toFixed(1)}/10). Nội dung cần ưu tiên củng cố trên lớp là <strong>${weakest.name}</strong> (TB ${weakest.avg.toFixed(1)}/10).
+            </div>
+          </div>
+        `;
+      }
       visibleClasses.forEach((clsName) => {
-        const students = [...byClass[clsName]].sort((a, b) => (Number(a.stt) || 9999) - (Number(b.stt) || 9999));
+        const attemptCounters = {};
+        const students = [...byClass[clsName]].map((st) => {
+          const key = `${String(st.stt).trim()}_${st.name.trim().toLowerCase()}`;
+          attemptCounters[key] = (attemptCounters[key] || 0) + 1;
+          return { ...st, attemptNo: attemptCounters[key] };
+        });
+        const uniqueStudents = Object.keys(attemptCounters).length;
+        students.sort((a, b) => (Number(a.stt) || 9999) - (Number(b.stt) || 9999) || a.attemptNo - b.attemptNo);
+
         const card = document.createElement("div");
         card.className = "class-group-card";
         card.innerHTML = `
           <div class="class-group-head">
             <div class="class-group-title">Lớp ${clsName}</div>
             <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-              <div class="class-count-pill">Đã làm: ${students.length} học sinh</div>
+              <div class="class-count-pill">Đã làm: ${uniqueStudents} HS (${students.length} lượt)</div>
               <button type="button" class="pill-btn export-class-btn" style="padding:5px 12px; font-size:0.84rem;">Tải Excel lớp ${clsName}</button>
             </div>
           </div>
@@ -2186,11 +2481,13 @@
                 <tr>
                   <th>STT</th>
                   <th>Họ và tên học sinh</th>
+                  <th>Lần</th>
                   <th>Phần I</th>
                   <th>Phần II</th>
                   <th>Phần III</th>
                   <th>Tổng điểm</th>
                   <th>Tỉ lệ (%)</th>
+                  <th>Đánh giá</th>
                 </tr>
               </thead>
               <tbody>
@@ -2198,11 +2495,13 @@
                   <tr>
                     <td>${st.stt}</td>
                     <td><strong>${st.name}</strong></td>
+                    <td>Lần ${st.attemptNo}</td>
                     <td>${st.part1} / 10</td>
                     <td>${st.part2} / 10</td>
                     <td>${st.part3} / 10</td>
                     <td><strong>${st.total} / 30</strong></td>
                     <td><span class="pct-badge ${st.percent >= 70 ? "good" : "low"}">${st.percent}%</span></td>
+                    <td style="font-size:0.84rem; color:#cbd5e1;">${getStudentRemark(st)}</td>
                   </tr>
                 `).join("")}
               </tbody>
@@ -2230,6 +2529,7 @@
           <td>${escapeHtmlCell(st.name)}</td>
           <td>${escapeHtmlCell(st.total)}</td>
           <td>${escapeHtmlCell(st.percent + "%")}</td>
+          <td>${escapeHtmlCell(getStudentRemark(st))}</td>
         </tr>
       `).join("");
 
@@ -2244,6 +2544,7 @@
         <th>Họ và tên</th>
         <th>Điểm</th>
         <th>Tỷ lệ</th>
+        <th>Đánh giá</th>
       </tr>
     </thead>
     <tbody>${rowsHtml}</tbody>
@@ -2265,6 +2566,19 @@
     document.getElementById("refreshStatsBtn").addEventListener("click", loadTeacherStats);
     document.getElementById("teacherLogoutBtn").addEventListener("click", () => switchUserBtn.click());
     window.addEventListener("beforeunload", saveStudentSession);
+
+    const toggleSummaryReviewBtn = document.getElementById("toggleSummaryReviewBtn");
+    if (toggleSummaryReviewBtn) {
+      toggleSummaryReviewBtn.addEventListener("click", () => {
+        const revWrap = document.getElementById("summaryReviewWrap");
+        if (!revWrap) return;
+        const isHidden = revWrap.classList.toggle("hidden");
+        toggleSummaryReviewBtn.textContent = isHidden ? "Xem lại bài làm" : "Ẩn bài làm";
+        if (!isHidden) {
+          revWrap.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        }
+      });
+    }
   </script>
 </body>
 </html>
